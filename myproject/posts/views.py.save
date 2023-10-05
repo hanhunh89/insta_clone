@@ -1,0 +1,87 @@
+# Create your views here.
+from django.views.generic.list import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import Article, ProfileImage, InstaImage, Likes_table, Comment
+
+from django.views import View
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from django.core import serializers
+
+#class PostListView(LoginRequiredMixin, ListView):
+class PostListView(ListView):
+    model = Article
+    template_name = 'posts/post_list.html'
+    login_url = '/custom-login-page/'  # 로그인되지 않은 사용자가 접근하면 여기로 리디렉션
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        queryset=super().get_queryset()
+
+        user=self.request.user
+
+        for article in queryset:
+            article.is_liked=Likes_table.objects.filter(user=user, article=article).exists()
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # ProfileImage 모델에서 로그인한 사용자의 프로필 이미지 가져오기
+        user = self.request.user
+        try:
+            profile_image = ProfileImage.objects.get(user=user)
+        except ProfileImage.DoesNotExist:
+            profile_image = None
+        context['profile_image'] = profile_image
+
+        # insta_image 모델에서 title이 like_heart_black인 레코드의 이미지 가져오기
+        like_heart_black_image = InstaImage.objects.get(title="like_heart_black")
+        like_heart_red_image = InstaImage.objects.get(title="like_heart_red")
+
+        context['like_heart_black_image'] = like_heart_black_image
+        context['like_heart_red_image'] = like_heart_red_image
+
+        return context
+    
+
+class Like_button_click_V(View):
+    def post(self, request, pk):
+        # Get the article using the provided pk
+        article = get_object_or_404(Article, pk=pk)
+        
+        # Check if the user has already liked the article
+        liked_by_user = Likes_table.objects.filter(user=request.user, article=article).exists()
+        
+        if liked_by_user:
+            # User has already liked the article, so unlike it
+            Likes_table.objects.filter(user=request.user, article=article).delete()
+            message = 'cancel'  # 좋아요가 이미 취소되었다는 메시지
+        else:
+            # User has not liked the article, so like it
+            like = Likes_table(user=request.user, article=article)
+            like.save()
+            message = 'add'  # 좋아요가 추가되었다는 메시지
+
+        likes_num = Likes_table.objects.filter(article=article).count()
+
+        return JsonResponse({'message': message, 'likes_num': likes_num})
+
+class AddCommentView(View):
+#    @method_decorator(login_required)  # 로그인이 필요한 경우 데코레이터 사용
+    def post(self, request, *args, **kwargs):
+        print("run AddCommentView")
+        article = get_object_or_404(Article, pk=kwargs['pk'])
+        content = request.POST.get('content', '')  # 댓글 내용 받아오기
+        print("content:"+content)
+
+        if content:  # 댓글 내용이 비어있지 않을 때만 처리
+            comment = Comment(user=request.user, article=article, content=content)
+            comment.save()
+        message_data=    
+        =Comment.objects.filter(article=article).values('user','content','created_at')  
+	
+ 
+        data = list(message)  # QuerySet을 리스트로 변환
+        return JsonResponse({'message': data})

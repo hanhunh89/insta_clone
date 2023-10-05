@@ -1,0 +1,7 @@
+<form method="post" action='{% url "posts:login" %}'>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">로그인</button>
+</form>
+<a href='{% url "posts:signup" %}'>signup</a>
+<a href='{% url "posts:guest_login" %}'>guest</a>
