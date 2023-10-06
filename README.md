@@ -65,7 +65,7 @@ instagram clone project
 --------
 
 
-1. 이제 아파치 서버로 이동합니다. 아파치 서버에서 아파치를 설치합시다.
+1. 이제 아파치 서버로 이동합니다. 아파치 서버에서 아파치를 설치합시다.  
     sudo apt-get update  
     sudo apt-get install apache2  
     sudo apt-get install libapache2-mod-wsgi-py3  
@@ -85,7 +85,7 @@ instagram clone project
 ex)  
 
 <VirtualHost *:80>
-    ServerName 34.22.75.219
+    ServerName serverIP
     ServerAdmin webmaster@localhost
 
     alias /static /home/embdaramzi/insta/myenv/myproject/static/
