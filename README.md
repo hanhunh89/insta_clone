@@ -85,7 +85,7 @@ instagram clone project
 ex)  
 
 <VirtualHost *:80>
-    ServerName serverIP
+    ServerName serverIP  
     ServerAdmin webmaster@localhost
 
     alias /static /home/embdaramzi/insta/myenv/myproject/static/
