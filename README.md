@@ -142,7 +142,7 @@ ex)
     ProxyPass / http://django_server_ip:8000/
     ProxyPassReverse / http://django_server_ip:8000/
 
-    WSGIDaemonProcess posts python-path=django_project_directory python-home=virtual_env_directory  
+#    WSGIDaemonProcess posts python-path=django_project_directory python-home=virtual_env_directory  
     WSGIProcessGroup app_name  
     WSGIScriptAlias / django_project_directory/wsgi.py  
     
@@ -172,7 +172,8 @@ ex)
     ProxyPass / http://34.131.45.160:8000/
     ProxyPassReverse / http://34.131.45.160.29:8000/
 
-    WSGIDaemonProcess posts python-path=/home/mamdjango/my/insta/myenv/myproject python-home=/home/mamdjango/my/insta/myenv  
+#    WSGIDaemonProcess posts python-path=/home/mamdjango/my/insta/myenv/myproject python-home=/home/mamdjango/my/insta/myenv  
+    WSGIDaemonProcess posts  
     WSGIProcessGroup posts  
     WSGIScriptAlias / /home/mamdjango/my/insta/myenv/myproject/myproject/wsgi.py  
     
