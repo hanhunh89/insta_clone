@@ -5,10 +5,15 @@ instagram clone project
 -----
 장고서버 설정
 ------
+1. git 설치 및 프로젝트 다운로드
+    ```
+    sudo apt update
+    sudo apt upgrade
+    sudo apt install git
+    git clone https://github.com/hanhunh89/insta_clone.git ./my
+    ```
 1. 장고 설치
-```
-    sudo apt update  
-    sudo apt upgrade  
+    ```
     sudo apt install python3  
     sudo apt install python3-pip  
     pip install virtualenv  
