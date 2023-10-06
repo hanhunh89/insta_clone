@@ -7,12 +7,12 @@ instagram clone project
 ------
 1. python 설치
    
-    '''
+    ```
     sudo apt update
     sudo apt upgrade
     sudo apt install python3  
     sudo apt install python3-pip  
-    '''
+    ```
    
 1. git 설치 및 프로젝트 다운로드
     ```
@@ -33,12 +33,9 @@ instagram clone project
    '''
 1. 장고 및 insta_clone 프로젝트에서 필요한 라이브러리 설치
     ```
-#    pip install virtualenv  
-
     pip install django
     pip install django-taggit
     pip install Pillow
-
    ```
 2. django에 WSGI 서버 설치. 이 프로젝트는 Gunicorn 설치
 ```
@@ -70,7 +67,7 @@ instagram clone project
   urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  
   urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  
 ```
-6. 정적파일 이동을 위해 my/insta/myenv/myproject 경로로 이
+6. 정적파일 이동을 위해 my/insta/myenv/myproject 경로로 이동
 ```
   python3 manage.py collectstatic  
   python3 manage.py migrate  
@@ -88,18 +85,10 @@ instagram clone project
   gunicorn --bind 0:8000 your_project.wsgi:application
   ```  
   저의 프로젝트 이름은 "myproject"이므로 명령어는 다음과 같습니다.  
-```  
+   ```  
   ex)gunicorn --bind 0:8000 myproject.wsgi:application
-```
-  만약 gunicorn을 찾을수 없다고 하면 pip install gunicorn으로 다시 설치합니다.
-  gunicorn이 설치되어있다면 설치된 경로가 표시될겁니다.
- 저는 Requirement already satisfied: gunicorn in /home/mamdjango/.local/lib/python3.9/site-package" 라고 뜹니다.
-그러면 여기에서 .local 까지 이동합니다.
-  .local 안에 bin이 보일텐데 path에 bin을 추가해줍니다.
-    '''
-    export PATH="/home/mamdjango/.local/bin:$PATH"
-    '''
-   다시  my/insta/myenv/myproject 디렉토리로 이동후 gunicorn을 실행합니다.
+   ```
+
    아래와 같은 코드가 실행되면 gunicorn이 정상적으로 동작하고 있는겁니다.
   '''
   [2023-10-06 14:04:35 +0000] [124876] [INFO] Starting gunicorn 21.2.0
