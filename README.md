@@ -6,13 +6,14 @@ instagram clone project
 장고서버 설정
 ------
 1. python 설치
+   
     '''
     sudo apt update
     sudo apt upgrade
     sudo apt install python3  
     sudo apt install python3-pip  
     '''
-2. 
+   
 1. git 설치 및 프로젝트 다운로드
     ```
     sudo apt install git
