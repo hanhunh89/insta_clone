@@ -5,19 +5,39 @@ instagram clone project
 -----
 장고서버 설정
 ------
-1. git 설치 및 프로젝트 다운로드
-    ```
+1. python 설치
+    '''
     sudo apt update
     sudo apt upgrade
+    sudo apt install python3  
+    sudo apt install python3-pip  
+    '''
+2. 
+1. git 설치 및 프로젝트 다운로드
+    ```
     sudo apt install git
     git clone https://github.com/hanhunh89/insta_clone.git ./my
     ```
-1. 장고 설치
+2. my 폴더로 이동하면 insta.tar.gz 파일이 있습니다. 압축을 해제합시다.
+   '''
+   cd my
+   tar -xzvf insta.tar.gz
+   '''
+
+3. 가상환경 진입.
+   insta/myenv/bin으로 이동 후 가상환경을 실행합니다.
+   '''
+   cd ./insta/myenv/bin
+   source activate
+   '''
+1. 장고 및 insta_clone 프로젝트에서 필요한 라이브러리 설치
     ```
-    sudo apt install python3  
-    sudo apt install python3-pip  
-    pip install virtualenv  
+#    pip install virtualenv  
+
     pip install django
+    pip install django-taggit
+    pip install Pillow
+
    ```
 2. django에 WSGI 서버 설치. 이 프로젝트는 Gunicorn 설치
 ```
@@ -26,7 +46,7 @@ instagram clone project
 3. 아파치에서 장고에 접속하도록 설정
   Django 애플리케이션에서는 ALLOWED_HOSTS 설정에 아파치 서버의 도메인을 추가해야 합니다.  
   이것은 Django 애플리케이션이 특정 도메인에서만 요청을 수락하도록 하는 보안 설정입니다  
-  setting.py파일에서  
+  my/insta/myenv/myproject/myproject/setting.py파일에서  
   ALLOWED_HOSTS = [] 부분에 아파치 서버 아이피/도메인 입력  
   저는 도메인이 없으므로 아파치 서버의 주소를 입력했습니다.
 ```
@@ -43,13 +63,13 @@ instagram clone project
   ex) CSRF_TRUSTED_ORIGINS = ['http://34.22.75.219'] #아파치 서버 등록  
 ```
 
-5. url.py 맨 밑에 두줄 추가
+5. my/insta/myenv/myproject/myproject/url.py 맨 밑에 두줄 추가
   스태틱 파일을 처리하기 위한 설정
 ```
   urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  
   urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  
 ```
-6. 정적파일 이동
+6. 정적파일 이동을 위해 my/insta/myenv/myproject 경로로 이
 ```
   python3 manage.py collectstatic  
   python3 manage.py migrate  
@@ -62,14 +82,30 @@ instagram clone project
   여기서 myproject 부분이 프로젝트 이름입니다.  
 
 8. Gunicorn을 사용하여 Django 애플리케이션을 실행합니다.
-```   
+   먼저 my/insta/myenv/myproject 디렉토리로 이동합니다.
+  ```
   gunicorn --bind 0:8000 your_project.wsgi:application
-```  
+  ```  
   저의 프로젝트 이름은 "myproject"이므로 명령어는 다음과 같습니다.  
 ```  
   ex)gunicorn --bind 0:8000 myproject.wsgi:application
 ```
-
+  만약 gunicorn을 찾을수 없다고 하면 pip install gunicorn으로 다시 설치합니다.
+  gunicorn이 설치되어있다면 설치된 경로가 표시될겁니다.
+ 저는 Requirement already satisfied: gunicorn in /home/mamdjango/.local/lib/python3.9/site-package" 라고 뜹니다.
+그러면 여기에서 .local 까지 이동합니다.
+  .local 안에 bin이 보일텐데 path에 bin을 추가해줍니다.
+    '''
+    export PATH="/home/mamdjango/.local/bin:$PATH"
+    '''
+   다시  my/insta/myenv/myproject 디렉토리로 이동후 gunicorn을 실행합니다.
+   아래와 같은 코드가 실행되면 gunicorn이 정상적으로 동작하고 있는겁니다.
+  '''
+  [2023-10-06 14:04:35 +0000] [124876] [INFO] Starting gunicorn 21.2.0
+  [2023-10-06 14:04:35 +0000] [124876] [INFO] Listening at: http://0.0.0.0:8000 (124876)
+  [2023-10-06 14:04:35 +0000] [124876] [INFO] Using worker: sync
+  [2023-10-06 14:04:35 +0000] [124877] [INFO] Booting worker with pid: 124877
+  '''
 -------
 아파치서버 설정
 --------
@@ -97,65 +133,62 @@ instagram clone project
 ex)  
 ```
     <VirtualHost *:80>
+    ServerName 아파치서버ip
 
-    ServerName serverIP  
-    ServerAdmin webmaster@localhost
-    alias /static /home/embdaramzi/insta/myenv/myproject/static/
-    alias /media /home/embdaramzi/insta/myenv/myproject/media
-    
-    <Directory /home/embdaramzi/insta/myenv/myproject/static/>
+    alias /static django_static_directory
+    alias /media django_media_directory
+
+    <Directory django_static_directory>
         Require all granted
     </Directory>
 
-    <Directory /home/embdaramzi/insta/myenv/myproject/posts/>
+    <Directory django_project_directory/posts/>
         <Files wsgi.py>
             Require all granted
         </Files>
     </Directory>
 
-    WSGIDaemonProcess posts python-path=/home/embdaramzi/insta/myenv/myproject python-home=/home/embdaramzi/insta/myenv
-    WSGIProcessGroup posts
-    WSGIScriptAlias / /home/embdaramzi/insta/myenv/myproject/myproject/wsgi.py
-
     # ProxyPass: Forward requests to the Django server
-    ProxyPass / http://34.86.255.29:8000/
-    ProxyPassReverse / http://34.86.255.29:8000/
+    ProxyPass / http://django_server_ip:8000/
+    ProxyPassReverse / http://django_server_ip:8000/
 
+    WSGIDaemonProcess posts python-path=django_project_directory python-home=virtual_env_directory  
+    WSGIProcessGroup app_name  
+    WSGIScriptAlias / django_project_directory/wsgi.py  
+    
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
-    </VirtualHost>
+</VirtualHost>
 ```
 저의 서버에 맞는 설정은 다음과 같습니다.   
 ```
 <VirtualHost *:80>
-
     ServerName 34.22.75.219
-    ServerAdmin webmaster@localhost
 
-    alias /static /home/embdaramzi/insta/myenv/myproject/static/
-    alias /media /home/embdaramzi/insta/myenv/myproject/media
-    
-    <Directory /home/embdaramzi/insta/myenv/myproject/static/>
+    alias /static /home/mamdjango/my/insta/myenv/myproject/static/
+    alias /media /home/mamdjango/my/insta/myenv/myproject/media
+
+    <Directory /home/mamdjango/my/insta/myenv/myproject/static/>
         Require all granted
     </Directory>
 
-    <Directory /home/embdaramzi/insta/myenv/myproject/posts/>
+    <Directory /home/mamdjango/my/insta/myenv/myproject/posts/>
         <Files wsgi.py>
             Require all granted
         </Files>
     </Directory>
 
-    WSGIDaemonProcess posts python-path=/home/embdaramzi/insta/myenv/myproject python-home=/home/embdaramzi/insta/myenv  
-    WSGIProcessGroup posts  
-    WSGIScriptAlias / /home/embdaramzi/insta/myenv/myproject/myproject/wsgi.py  
-    
     # ProxyPass: Forward requests to the Django server
-    ProxyPass / http://34.86.255.29:8000/
-    ProxyPassReverse / http://34.86.255.29:8000/
+    ProxyPass / http://34.131.45.160:8000/
+    ProxyPassReverse / http://34.131.45.160.29:8000/
 
+    WSGIDaemonProcess posts python-path=/home/mamdjango/my/insta/myenv/myproject python-home=/home/mamdjango/my/insta/myenv  
+    WSGIProcessGroup posts  
+    WSGIScriptAlias / /home/mamdjango/my/insta/myenv/myproject/myproject/wsgi.py  
+    
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
-    </VirtualHost> 
+</VirtualHost>
 ```
  my_apache_project.conf 파일 안에 위와 같이 입력 후 저장합니다.   
 
@@ -175,3 +208,5 @@ Apache의 필요한 모듈을 활성화하고 서비스를 재시작합니다.
 ```
 
 끗 !
+
+http://아파치서버아이피/posts 접속하면 프로젝트에 접속할 수 있습니다. 
