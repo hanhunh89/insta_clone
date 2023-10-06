@@ -85,6 +85,8 @@ instagram clone project
 ex)  
 
 <VirtualHost *:80>
+    <!-- 내용 -->
+
     ServerName serverIP  
     ServerAdmin webmaster@localhost
     alias /static /home/embdaramzi/insta/myenv/myproject/static/
@@ -115,6 +117,8 @@ ex)
 저의 서버에 맞는 설정은 다음과 같습니다.   
 
 <VirtualHost *:80>
+    <!-- 내용 -->
+
     ServerName 34.22.75.219
     ServerAdmin webmaster@localhost
 
