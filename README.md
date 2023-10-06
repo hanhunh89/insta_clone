@@ -87,7 +87,6 @@ ex)
 <VirtualHost *:80>
     ServerName serverIP  
     ServerAdmin webmaster@localhost
-
     alias /static /home/embdaramzi/insta/myenv/myproject/static/
     alias /media /home/embdaramzi/insta/myenv/myproject/media
     
@@ -104,6 +103,7 @@ ex)
     WSGIDaemonProcess posts python-path=/home/embdaramzi/insta/myenv/myproject python-home=/home/embdaramzi/insta/myenv
     WSGIProcessGroup posts
     WSGIScriptAlias / /home/embdaramzi/insta/myenv/myproject/myproject/wsgi.py
+
     # ProxyPass: Forward requests to the Django server
     ProxyPass / http://34.86.255.29:8000/
     ProxyPassReverse / http://34.86.255.29:8000/
