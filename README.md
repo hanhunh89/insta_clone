@@ -118,8 +118,9 @@ ex)
     ServerName 34.22.75.219
     ServerAdmin webmaster@localhost
 
-    DocumentRoot /home/embdaramzi/insta/myenv/myproject
-    Alias /static/ /home/embdaramzi/insta/myenv/myproject/static/
+    alias /static /home/embdaramzi/insta/myenv/myproject/static/
+    alias /media /home/embdaramzi/insta/myenv/myproject/media
+    
     <Directory /home/embdaramzi/insta/myenv/myproject/static/>
         Require all granted
     </Directory>
@@ -130,13 +131,17 @@ ex)
         </Files>
     </Directory>
 
+    WSGIDaemonProcess posts python-path=/home/embdaramzi/insta/myenv/myproject python-home=/home/embdaramzi/insta/myenv  
+    WSGIProcessGroup posts  
+    WSGIScriptAlias / /home/embdaramzi/insta/myenv/myproject/myproject/wsgi.py  
+    
     # ProxyPass: Forward requests to the Django server
     ProxyPass / http://34.86.255.29:8000/
     ProxyPassReverse / http://34.86.255.29:8000/
 
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
-</VirtualHost>
+</VirtualHost> 
 
  my_apache_project.conf 파일 안에 위와 같이 입력 후 저장합니다.   
 
