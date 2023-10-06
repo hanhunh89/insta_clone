@@ -84,7 +84,7 @@ instagram clone project
 3.my_apache_project.conf 파일에 다음과 같이 입력해야 합니다.   
 ex)  
 
-<VirtualHost *:80>
+ <VirtualHost *:80>
     <!-- 내용 -->
 
     ServerName serverIP  
@@ -112,7 +112,7 @@ ex)
 
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
-</VirtualHost>
+ </VirtualHost>
 
 저의 서버에 맞는 설정은 다음과 같습니다.   
 
