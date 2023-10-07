@@ -20,17 +20,17 @@ instagram clone project
     git clone https://github.com/hanhunh89/insta_clone.git ./my
     ```
 2. my 폴더로 이동하면 insta.tar.gz 파일이 있습니다. 압축을 해제합시다.
-   '''
+   ```
    cd my
    tar -xzvf insta.tar.gz
-   '''
+   ```
 
 3. 가상환경 진입.
    insta/myenv/bin으로 이동 후 가상환경을 실행합니다.
-   '''
+   ```
    cd ./insta/myenv/bin
    source activate
-   '''
+   ```
 1. 장고 및 insta_clone 프로젝트에서 필요한 라이브러리 설치
     ```
     pip install django
