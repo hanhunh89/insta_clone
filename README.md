@@ -183,6 +183,38 @@ ex)
 ```
  my_apache_project.conf 파일 안에 위와 같이 입력 후 저장합니다.   
 
+ 만약 apache와 django가 같은 서버에 있다면 아래와 같이 설정합니다.
+ ```
+<VirtualHost *:80>
+    ServerName 127.0.0.1
+
+    alias /static /home/embdaramzi/my/insta/myenv/myproject/static/
+    alias /media /home/embdaramzi/my/insta/myenv/myproject/media
+
+    <Directory /home/embdaramzi/my/insta/myenv/myproject/static/>
+        Require all granted
+    </Directory>
+
+    <Directory /home/embdaramzi/my/insta/myenv/myproject/myproject>
+        <Files wsgi.py>
+            Require all granted
+        </Files>
+    </Directory>
+
+    <Location "/">
+        Require all granted
+#        Order Allow,Deny
+ #       Deny from all
+  #      Allow from 218.232.67.146
+    </Location>
+
+    WSGIScriptAlias / /home/embdaramzi/my/insta/myenv/myproject/myproject/wsgi.py     
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+WSGIPythonPath /home/embdaramzi/my/insta/myenv/myproject
+ ```
+
 
 4. a2ensite 명령을 사용하여 새로운 가상 호스트 설정을 활성화합니다.  
    이 명령어를 통해 아파치의 default 설정이 아닌 우리가 만든 설정이 적용됩니다.
