@@ -14,34 +14,40 @@ instagram clone project
     sudo apt install python3-pip  
     ```
    
-1. git 설치 및 프로젝트 다운로드
+2. git 설치 및 프로젝트 다운로드
     ```
     sudo apt install git
     git clone https://github.com/hanhunh89/insta_clone.git ./my
     ```
-2. my 폴더로 이동하면 insta.tar.gz 파일이 있습니다. 압축을 해제합시다.
+    
+3. my 폴더로 이동하면 insta.tar.gz 파일이 있습니다. 압축을 해제합시다.
+    -> 해당 프로세스는 불필요합니다. 3으로 바로 넘어가세요 
    ```
    cd my
    tar -xzvf insta.tar.gz
    ```
-
-3. 가상환경 진입.
+4. path에 경로 추가
+   ```
+   echo 'export PATH=$PATH:~/.local/bin' >> ~/.bashrc
+   source ~/.bashrc
+   ```
+5. 가상환경 진입.
    insta/myenv/bin으로 이동 후 가상환경을 실행합니다.
    ```
    cd ./insta/myenv/bin
    source activate
    ```
-1. 장고 및 insta_clone 프로젝트에서 필요한 라이브러리 설치
+6. 장고 및 insta_clone 프로젝트에서 필요한 라이브러리 설치
     ```
     pip install django
     pip install django-taggit
     pip install Pillow
    ```
-2. django에 WSGI 서버 설치. 이 프로젝트는 Gunicorn 설치
+7. django에 WSGI 서버 설치. 이 프로젝트는 Gunicorn 설치
 ```
     pip install gunicorn  
 ```
-3. 아파치에서 장고에 접속하도록 설정
+8. 아파치에서 장고에 접속하도록 설정
   Django 애플리케이션에서는 ALLOWED_HOSTS 설정에 아파치 서버의 도메인을 추가해야 합니다.  
   이것은 Django 애플리케이션이 특정 도메인에서만 요청을 수락하도록 하는 보안 설정입니다  
   my/insta/myenv/myproject/myproject/setting.py파일에서  
@@ -51,7 +57,7 @@ instagram clone project
   ex) ALLOWED_HOSTS = [‘123.123.123.123’]  
   ex) ALLOWED_HOSTS = [‘mysite.com’]  
 ```
-4. csrf 관련 아파치 등록
+9. csrf 관련 아파치 등록
    아파치가 프록시 서버 역할을 하기 때문에, 요청을 보내는 ip(내 ip)와  
    장고 입장에서 요청을 보내는 ip(apache)가 다릅니다. 이와 관련하여  
    '이 아이피는 안전한 아이피야' 라고 알려주는 설정입니다.   
@@ -61,25 +67,25 @@ instagram clone project
   ex) CSRF_TRUSTED_ORIGINS = ['http://34.22.75.219'] #아파치 서버 등록  
 ```
 
-5. my/insta/myenv/myproject/myproject/url.py 맨 밑에 두줄 추가
+10. my/insta/myenv/myproject/myproject/url.py 맨 밑에 두줄 추가
   스태틱 파일을 처리하기 위한 설정
 ```
   urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  
   urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  
 ```
-6. 정적파일 이동을 위해 my/insta/myenv/myproject 경로로 이동
+11. 정적파일 이동을 위해 my/insta/myenv/myproject 경로로 이동
 ```
   python3 manage.py collectstatic  
   python3 manage.py migrate  
 ```
-7. 내 장고 프로젝트 이름을 확인
+12. 내 장고 프로젝트 이름을 확인
   장고 프로젝트 내 setting.py 파일에서 아래 항목 확인  
 ```
   ROOT_URLCONF = 'myproject.urls'  
 ```
   여기서 myproject 부분이 프로젝트 이름입니다.  
 
-8. Gunicorn을 사용하여 Django 애플리케이션을 실행합니다.
+13. Gunicorn을 사용하여 Django 애플리케이션을 실행합니다.
    먼저 my/insta/myenv/myproject 디렉토리로 이동합니다.
   ```
   gunicorn --bind 0:8000 your_project.wsgi:application
@@ -88,14 +94,16 @@ instagram clone project
    ```  
   ex)gunicorn --bind 0:8000 myproject.wsgi:application
    ```
-
-   아래와 같은 코드가 실행되면 gunicorn이 정상적으로 동작하고 있는겁니다.
-  '''
+  아래와 같은 코드가 실행되면 정상적으로 동작 중입니다. 
+  ```
   [2023-10-06 14:04:35 +0000] [124876] [INFO] Starting gunicorn 21.2.0
   [2023-10-06 14:04:35 +0000] [124876] [INFO] Listening at: http://0.0.0.0:8000 (124876)
   [2023-10-06 14:04:35 +0000] [124876] [INFO] Using worker: sync
   [2023-10-06 14:04:35 +0000] [124877] [INFO] Booting worker with pid: 124877
-  '''
+  ```
+  웹브라우저를 이용하여 http://django_server_ip:8000 으로 접속했을 때 404 페이지가 뜨거나 다른 페이지가 뜨면 
+  django가 정상적으로 설정된 것입니다. 
+  
 -------
 아파치서버 설정
 --------
@@ -125,26 +133,9 @@ ex)
     <VirtualHost *:80>
     ServerName 아파치서버ip
 
-    alias /static django_static_directory
-    alias /media django_media_directory
-
-    <Directory django_static_directory>
-        Require all granted
-    </Directory>
-
-    <Directory django_project_directory/posts/>
-        <Files wsgi.py>
-            Require all granted
-        </Files>
-    </Directory>
-
     # ProxyPass: Forward requests to the Django server
     ProxyPass / http://django_server_ip:8000/
     ProxyPassReverse / http://django_server_ip:8000/
-
-#    WSGIDaemonProcess posts python-path=django_project_directory python-home=virtual_env_directory  
-    WSGIProcessGroup app_name  
-    WSGIScriptAlias / django_project_directory/wsgi.py  
     
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
@@ -155,27 +146,9 @@ ex)
 <VirtualHost *:80>
     ServerName 34.22.75.219
 
-    alias /static /home/mamdjango/my/insta/myenv/myproject/static/
-    alias /media /home/mamdjango/my/insta/myenv/myproject/media
-
-    <Directory /home/mamdjango/my/insta/myenv/myproject/static/>
-        Require all granted
-    </Directory>
-
-    <Directory /home/mamdjango/my/insta/myenv/myproject/posts/>
-        <Files wsgi.py>
-            Require all granted
-        </Files>
-    </Directory>
-
     # ProxyPass: Forward requests to the Django server
     ProxyPass / http://34.131.45.160:8000/
     ProxyPassReverse / http://34.131.45.160.29:8000/
-
-#    WSGIDaemonProcess posts python-path=/home/mamdjango/my/insta/myenv/myproject python-home=/home/mamdjango/my/insta/myenv  
-    WSGIDaemonProcess posts  
-    WSGIProcessGroup posts  
-    WSGIScriptAlias / /home/mamdjango/my/insta/myenv/myproject/myproject/wsgi.py  
     
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
@@ -184,19 +157,19 @@ ex)
  my_apache_project.conf 파일 안에 위와 같이 입력 후 저장합니다.   
 
  만약 apache와 django가 같은 서버에 있다면 아래와 같이 설정합니다.
- 
+ 이때는 gunicorn이 아니라 apache의 mod_wsgi를 이용합니다.  
  ```
 <VirtualHost *:80>
     ServerName 127.0.0.1
 
-    alias /static /home/embdaramzi/my/insta/myenv/myproject/static/
-    alias /media /home/embdaramzi/my/insta/myenv/myproject/media
+    alias /static /home/embdaramzi/my/insta/myenv/myproject/static/ #django static 디렉토리
+    alias /media /home/embdaramzi/my/insta/myenv/myproject/media #django media 디렉토리
 
     <Directory /home/embdaramzi/my/insta/myenv/myproject/static/>
         Require all granted
     </Directory>
 
-    <Directory /home/embdaramzi/my/insta/myenv/myproject/myproject>
+    <Directory /home/embdaramzi/my/insta/myenv/myproject/myproject>  #wsgi.py의 경로
         <Files wsgi.py>
             Require all granted
         </Files>
@@ -209,11 +182,11 @@ ex)
   #      Allow from 218.232.67.146
     </Location>
 
-    WSGIScriptAlias / /home/embdaramzi/my/insta/myenv/myproject/myproject/wsgi.py     
+    WSGIScriptAlias / /home/embdaramzi/my/insta/myenv/myproject/myproject/wsgi.py  #wsgi.py의 경로
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
-WSGIPythonPath /home/embdaramzi/my/insta/myenv/myproject
+WSGIPythonPath /home/embdaramzi/my/insta/myenv/myproject #django project 경로
  ```
 
 
@@ -225,7 +198,7 @@ WSGIPythonPath /home/embdaramzi/my/insta/myenv/myproject
 5.pache 모듈 활성화 및 서비스 재시작:  
 Apache의 필요한 모듈을 활성화하고 서비스를 재시작합니다.  
 ```
-    sudo systemctl restart apache2  
+    #sudo systemctl restart apache2  
     sudo a2enmod proxy
     sudo a2enmod proxy_http
     sudo service apache2 restart
@@ -234,3 +207,11 @@ Apache의 필요한 모듈을 활성화하고 서비스를 재시작합니다.
 끗 !
 
 http://아파치서버아이피/posts 접속하면 프로젝트에 접속할 수 있습니다. 
+
+
+--------
+추가 
+-------
+한 서버에 장고와 아파치를 같이 설치하면 permission에러가 납니다.
+관련 파일과 디렉토리에 권한을 추가로 부여하면 됩니다. 
+끗. 
