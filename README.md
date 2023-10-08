@@ -184,6 +184,7 @@ ex)
  my_apache_project.conf 파일 안에 위와 같이 입력 후 저장합니다.   
 
  만약 apache와 django가 같은 서버에 있다면 아래와 같이 설정합니다.
+ 
  ```
 <VirtualHost *:80>
     ServerName 127.0.0.1
