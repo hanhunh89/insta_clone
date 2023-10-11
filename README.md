@@ -209,9 +209,59 @@ Apache의 필요한 모듈을 활성화하고 서비스를 재시작합니다.
 http://아파치서버아이피/posts 접속하면 프로젝트에 접속할 수 있습니다. 
 
 
+
 --------
 추가 
 -------
 한 서버에 장고와 아파치를 같이 설치하면 permission에러가 납니다.
 관련 파일과 디렉토리에 권한을 추가로 부여하면 됩니다. 
 끗. 
+
+-----
+추가
+-------
+
+###########
+sqllite가 아닌 mariaDB를 쓰려면 아래와 같이 합니다. 
+1. 패키지 업데이트
+   ```
+   sudo apt update
+   sudo apt upgrade
+   ```
+
+2. mariaDB 설치
+   '''
+   sudo apt-get install mariadb-server
+
+   '''
+
+3. django setting.py 설정
+   ```
+   DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'mydatabase',
+        'USER': 'mydatabaseuser',
+        'PASSWORD': 'mypassword',
+        'HOST': 'localhost',
+        'PORT': '3306',
+    }
+   }
+   ```
+
+4. django서버에서 MySQL 클라이언트 라이브러리를 설치
+   ```
+   sudo apt-get install libmariadb-dev-compat
+   pip install mysqlclient
+   ```
+
+
+5. django에서 개발할 때 사용한 db를 mariaDB로 이전
+   ```
+   python3 manage.py dumpdata > backup.json
+   python manage.py loaddata backup.json
+   ```
+6. django에서 gunicorn 실행
+   ```
+   gunicorn --bind 0:8000 your_project.wsgi:application
+   ```
