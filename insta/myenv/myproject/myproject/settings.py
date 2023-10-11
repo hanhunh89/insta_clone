@@ -79,6 +79,7 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 '''
+#setting for SQLlite
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -86,6 +87,7 @@ DATABASES = {
     }
 }
 '''
+#setting for mysql
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
