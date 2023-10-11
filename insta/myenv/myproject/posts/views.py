@@ -48,31 +48,12 @@ class PostListView(LoginRequiredMixin, ListView):
 
         # insta_image 모델에서 title이 like_heart_black인 레코드의 이미지 가져오기
 
-        is_like_heart_black_exist=True
-        try:
-            like_heart_black_image = InstaImage.objects.get(title="like_heart_black")
-        except InstaImage.DoesNotExist:
-            is_like_heart_black_exist=False
-            print("No InstaImage with title 'like_heart_black'")
+        like_heart_black_image = InstaImage.objects.get(title="like_heart_black")
+        like_heart_red_image = InstaImage.objects.get(title="like_heart_red")
 
-        is_like_heart_red_image=True
-        try:
-            like_heart_red_image = InstaImage.objects.get(title="like_heart_red")
-        except InstaImage.DoesNotExist:
-            is_like_heart_red_image=False
+        context['like_heart_black_image'] = like_heart_black_image
+        context['like_heart_red_image'] = like_heart_red_image
 
-        if(is_like_heart_black_exist):
-            context['like_heart_black_image'] = like_heart_black_image
-        else:
-            context['like_heart_black_image'] = 'null'
-
-        if(is_like_heart_red_image):
-            context['is_like_heart_red_image'] = is_like_heart_red_image
-        else:
-            context['is_like_heart_red_image'] = 'null'
-
-
-        
         for post in context['posts']:
             post.created_at = post.created_at.astimezone(timezone.utc).isoformat()
             
