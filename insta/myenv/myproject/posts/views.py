@@ -44,14 +44,33 @@ class PostListView(LoginRequiredMixin, ListView):
             profile_image = None
         context['profile_image'] = profile_image
         
-        #
 
         # insta_image 모델에서 title이 like_heart_black인 레코드의 이미지 가져오기
-        like_heart_black_image = InstaImage.objects.get(title="like_heart_black")
-        like_heart_red_image = InstaImage.objects.get(title="like_heart_red")
 
-        context['like_heart_black_image'] = like_heart_black_image
-        context['like_heart_red_image'] = like_heart_red_image
+        is_like_heart_black_exist=True
+        try:
+            like_heart_black_image = InstaImage.objects.get(title="like_heart_black")
+        except InstaImage.DoesNotExist:
+            is_like_heart_black_exist=False
+            print("No InstaImage with title 'like_heart_black'")
+
+        is_like_heart_red_image=True
+        try:
+            like_heart_red_image = InstaImage.objects.get(title="like_heart_red")
+        except InstaImage.DoesNotExist:
+            is_like_heart_red_image=False
+
+        if(is_like_heart_black_exist):
+            context['like_heart_black_image'] = like_heart_black_image
+        else:
+            context['like_heart_black_image'] = 'null'
+
+        if(is_like_heart_red_image):
+            context['is_like_heart_red_image'] = is_like_heart_red_image
+        else:
+            context['is_like_heart_red_image'] = 'null'
+
+
         
         for post in context['posts']:
             post.created_at = post.created_at.astimezone(timezone.utc).isoformat()
@@ -139,6 +158,12 @@ class AddCommentView(View):
             if(new_record_pk==comment.pk) :
                 new_record=True
             
+            profile_image_url="null"
+            try:
+                profile_image_url=ProfileImage.objects.get(user=comment.user).images.image.url
+            except ProfileImage.DoesNotExist:
+                print("class AddCommentView(View): ProfileImage does not exist.")
+        
             data={
                 'pk':comment.pk,
                 'text':comment.content,
@@ -146,7 +171,7 @@ class AddCommentView(View):
                 'created_at':comment.created_at,
                 'num_of_like':comment.likes_num,
 #                'profile_image_url':ProfileImage.objects.get(user=request.user).images.image.url,
-                'profile_image_url':ProfileImage.objects.get(user=comment.user).images.image.url,
+                'profile_image_url':profile_image_url,
                 'is_liked':is_liked,
                 'comment_parent': comment.parent_comment.pk if comment.parent_comment else None,
                 'num_of_comment':comment.child_comments_num,
@@ -222,9 +247,10 @@ class CommentDeleteView(View):
 
 
 
-class Clear_likes_model(View):
-    Likes_table.objects.all().delete()
+#class Clear_likes_model(View):
 
+#    Likes_table.objects.all().delete()
+#    print("call clear_likes_model)
 
 class Create_articleView(View):
 
@@ -319,15 +345,23 @@ def logout_view(request):
 
 
 def signup(request):
-    print("signup 함수 시작")
     if request.method == 'POST':
-        print("request.method == 'POST")
         form = SignUpForm(request.POST)
+        
+        is_image_instance=True
+        try:
+            image_instance = Image.objects.get(pk=51)
+        except Image.DoesNotExist:
+            print("there is no image pk=51")
+            is_image_instance=False
+        
+        
         if form.is_valid():
             print("form.is_valid():")
             user = form.save()
-            image_instance = Image.objects.get(pk=51)
-            profile_image = ProfileImage.objects.create(user=user, images=image_instance)
+#            image_instance = Image.objects.get(pk=51)
+            if(is_image_instance) :
+                profile_image = ProfileImage.objects.create(user=user, images=image_instance)
             print("login으로 리다이렉트!")
             return redirect('posts:login')  # 회원가입 후 이동할 페이지
     else:
