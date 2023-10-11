@@ -11,6 +11,7 @@ from taggit.managers import TaggableManager
        
 class Image(models.Model):
     image = models.ImageField(upload_to='posts/images/')
+    name = models.TextField(blank=True, default=" ")
 
 
 class Video(models.Model):

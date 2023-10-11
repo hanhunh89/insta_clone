@@ -42,6 +42,7 @@ class PostListView(LoginRequiredMixin, ListView):
             profile_image = ProfileImage.objects.get(user=user)
         except ProfileImage.DoesNotExist:
             profile_image = None
+            print("class PostListView(LoginRequiredMixin, ListView): no profile image")
         context['profile_image'] = profile_image
         
 
@@ -350,9 +351,10 @@ def signup(request):
         
         is_image_instance=True
         try:
-            image_instance = Image.objects.get(pk=51)
+#            image_instance = Image.objects.get(pk=51)
+            image_instance = Image.objects.get(name='default_profile')
         except Image.DoesNotExist:
-            print("there is no image pk=51")
+            print("there is no image name=default_profile")
             is_image_instance=False
         
         
