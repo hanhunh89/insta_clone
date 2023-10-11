@@ -254,13 +254,21 @@ sqllite가 아닌 mariaDB를 쓰려면 아래와 같이 합니다.
    sudo apt-get install libmariadb-dev-compat
    pip install mysqlclient
    ```
-
+   
+6. db migrate
+   ```
+   python3 manage.py makemigrations
+   python3 manage.py migrate
+   ```
 
 5. django에서 개발할 때 사용한 db를 mariaDB로 이전
    ```
    python3 manage.py dumpdata > backup.json
-   python manage.py loaddata backup.json
+   python3 manage.py loaddata backup.json
    ```
+
+
+   
 6. django에서 gunicorn 실행
    ```
    gunicorn --bind 0:8000 your_project.wsgi:application
