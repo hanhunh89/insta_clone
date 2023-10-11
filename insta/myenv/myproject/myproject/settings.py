@@ -140,5 +140,5 @@ TIME_ZONE = 'Asia/Seoul'
 TAGGIT_CASE_INSENSITIVE = True #taggit에서 대소문자 구분 안함
 #CSRF_COOKIE_SECURE = False #개발환경(http)에서 csrf token. 사용
 
-CSRF_TRUSTED_ORIGINS = ['http://34.22.75.219'] #아파치 서버 등록
+CSRF_TRUSTED_ORIGINS = ['http://34.64.106.7'] #아파치 서버 등록
 
