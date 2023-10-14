@@ -230,10 +230,10 @@ sqllite가 아닌 mariaDB를 쓰려면 아래와 같이 합니다.
    ```
 
 2. mariaDB 설치
-   '''
+   ```
    sudo apt-get install mariadb-server
 
-   '''
+   ```
 
 3. django setting.py 설정
    ```
