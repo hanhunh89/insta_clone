@@ -95,17 +95,17 @@ class Like_article_button_click_V(View):
 class AddCommentView(View):
 #    @method_decorator(login_required)  # 로그인이 필요한 경우 데코레이터 사용
     def post(self, request, *args, **kwargs):
-        print("run AddCommentView")
+        #print("run AddCommentView")
         article = get_object_or_404(Article, pk=kwargs['pk'])
         content = request.POST.get('content', '')  # 댓글 내용 받아오기
-        print("content:"+content)
+        #print("content:"+content)
         comment_parent=request.POST.get('comment_parent',-1)
         comment_parent = int(comment_parent)
         new_record_pk=-1
         parent_comment_object=-1
-        print("comment_parent : "+str(comment_parent))
+        #print("comment_parent : "+str(comment_parent))
         if content:  # 댓글 내용이 비어있지 않을 때만 처리
-            print("add content!")
+            #print("add content!")
             if(comment_parent==-1):
                 comment = Comment(user=request.user, article=article, content=content)
                 comment.save()
@@ -195,12 +195,12 @@ class Like_comment_button_click_V(View):
 
 class CommentDeleteView(View):
     def post(self, request, pk, *args, **kwargs):
-        print("CommentDeleteView")
+        #print("CommentDeleteView")
 
         comment = get_object_or_404(Comment, pk=pk)
         parent=comment.parent_comment
         article=comment.article
-        print("삭제 전 아티클의 코멘트 수 : "+str(article.comments_num))
+        #print("삭제 전 아티클의 코멘트 수 : "+str(article.comments_num))
 
 
         child_comments=Comment.objects.filter(parent_comment=comment)
@@ -212,14 +212,14 @@ class CommentDeleteView(View):
             
                     # comment의 부모가 있는지 확인.
             if parent is not None:
-                print("comment의 부모가 있다.")
+               # print("comment의 부모가 있다.")
                 child_comment=Comment.objects.filter(parent_comment=parent).count()
-                print("comment의 부모의 댓글 수 :"+str(child_comment))
+                #print("comment의 부모의 댓글 수 :"+str(child_comment))
                 parent.child_comments_num=child_comment
                 parent.save()
             article.comments_num=Comment.objects.filter(article=article).count()
             article.save()
-            print("삭제 후 아티클의 코멘트 수 : "+str(article.comments_num))
+            #print("삭제 후 아티클의 코멘트 수 : "+str(article.comments_num))
             
             
             
@@ -240,7 +240,7 @@ class Create_articleView(View):
     def post(self, request):
         file_type = request.POST.get('type')
         content = request.POST.get('content')
-        print("content : "+content)
+       # print("content : "+content)
         if(file_type=='video'):  #if input is video
             form = VideoForm(request.POST, request.FILES)
         elif(file_type=='image'):
@@ -259,9 +259,9 @@ class Create_articleView(View):
             form = ArticleForm(article_form_data)
             if form.is_valid() :
 
-                print("article form is valid")
+        #        print("article form is valid")
                 instance = form.save(commit=False) 
-                print("instance :"+str(instance))
+         #       print("instance :"+str(instance))
                 instance.author=request.user
                 
                 instance.save()
@@ -276,7 +276,7 @@ class Get_logined_id(View):
     def post(self, request):
         if request.user.is_authenticated:
             user_id = request.user
-            print("user_id: " + str(user_id))
+          #  print("user_id: " + str(user_id))
             
             try:
                 profile_image = ProfileImage.objects.get(user=user_id)
@@ -284,7 +284,7 @@ class Get_logined_id(View):
             except ProfileImage.DoesNotExist:
                 profile_image = None
                 profile_image_url=""
-            print("profle_image_url : "+str(profile_image_url))
+           # print("profle_image_url : "+str(profile_image_url))
             return JsonResponse({'message': str(user_id),'profile_url': str(profile_image_url)})
         else:
             return JsonResponse({'message': 'Not logged in'})
@@ -295,20 +295,20 @@ class LoginView(View):
     template_name = 'posts/login.html'
 
     def get(self, request):
-        print("loginview get")
+     #   print("loginview get")
         form = LoginForm()
-        print("login page return")
+      #  print("login page return")
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
-        print("login post start")
+       # print("login post start")
         form = LoginForm(request, request.POST)
         if form.is_valid():
-            print("form is valid")
+        #    print("form is valid")
             user = form.get_user()
-            print("user :"+str(user))
+         #   print("user :"+str(user))
             login(request, user)
-            print("login 완료 및 리다이렉트")
+          #  print("login 완료 및 리다이렉트")
             return redirect('posts:post_list')  # 로그인 후 이동할 페이지
         else :
             print("form. is invalid")
@@ -341,12 +341,12 @@ def signup(request):
         
         
         if form.is_valid():
-            print("form.is_valid():")
+           # print("form.is_valid():")
             user = form.save()
 #            image_instance = Image.objects.get(pk=51)
             #if(is_image_instance) :
             profile_image = ProfileImage.objects.create(user=user, images=image_instance)
-            print("login으로 리다이렉트!")
+            #print("login으로 리다이렉트!")
             return redirect('posts:login')  # 회원가입 후 이동할 페이지
     else:
         form = SignUpForm()
