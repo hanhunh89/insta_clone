@@ -257,8 +257,14 @@ sqllite가 아닌 mariaDB를 쓰려면 아래와 같이 합니다.
    부분을 주석처리해줍니다.
 
    
-   다음으로 django 서버에서 설정합니다. 
-3. django서버에서 setting.py 설정
+   다음으로 django 서버에서 설정합니다.
+1. 장고에 내장된 SQLlite에 있는 데이터를 백업합니다.
+   manage.py가 있는 디렉토리에서 다음을 실행합니다.
+   ```
+   python3 manage.py dumpdata > backup.json   
+   ```
+
+2. django서버에서 setting.py 설정
    ```
    DATABASES = {
     'default': {
@@ -272,25 +278,22 @@ sqllite가 아닌 mariaDB를 쓰려면 아래와 같이 합니다.
    }
    ```
 
-4. django서버에서 MySQL 클라이언트 라이브러리를 설치
+3. django서버에서 MySQL 클라이언트 라이브러리를 설치
    ```
    sudo apt-get install libmariadb-dev-compat
    pip install mysqlclient
    ```
    
-6. db migrate
+4. db migrate
    ```
    python3 manage.py makemigrations
    python3 manage.py migrate
    ```
 
-5. django에서 개발할 때 사용한 db를 mariaDB로 이전
+5. django에서 개발할 때 사용한 SQLlite db를 mariaDB로 이전
    ```
-   python3 manage.py dumpdata > backup.json
    python3 manage.py loaddata backup.json
    ```
-
-
    
 6. django에서 gunicorn 실행
    ```
