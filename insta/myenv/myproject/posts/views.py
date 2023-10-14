@@ -41,7 +41,8 @@ class PostListView(LoginRequiredMixin, ListView):
         try:
             profile_image = ProfileImage.objects.get(user=user)
         except ProfileImage.DoesNotExist:
-            profile_image = None
+            profile_image = Image.objects.get(name='default_profile')
+            #profile_image = None
             print("class PostListView(LoginRequiredMixin, ListView): no profile image")
         context['profile_image'] = profile_image
         
@@ -336,15 +337,15 @@ def signup(request):
             image_instance = Image.objects.get(name='default_profile')
         except Image.DoesNotExist:
             print("there is no image name=default_profile")
-            is_image_instance=False
+            #is_image_instance=False
         
         
         if form.is_valid():
             print("form.is_valid():")
             user = form.save()
 #            image_instance = Image.objects.get(pk=51)
-            if(is_image_instance) :
-                profile_image = ProfileImage.objects.create(user=user, images=image_instance)
+            #if(is_image_instance) :
+            profile_image = ProfileImage.objects.create(user=user, images=image_instance)
             print("login으로 리다이렉트!")
             return redirect('posts:login')  # 회원가입 후 이동할 페이지
     else:
