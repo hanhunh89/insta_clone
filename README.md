@@ -223,6 +223,7 @@ http://아파치서버아이피/posts 접속하면 프로젝트에 접속할 수
 
 ###########
 sqllite가 아닌 mariaDB를 쓰려면 아래와 같이 합니다. 
+먼저, db서버에서 설정을 해줍니다. 
 1. 패키지 업데이트
    ```
    sudo apt update
@@ -234,8 +235,30 @@ sqllite가 아닌 mariaDB를 쓰려면 아래와 같이 합니다.
    sudo apt-get install mariadb-server
 
    ```
+3. mariaDB 접속
+   ```
+   sudo mysql -u root
+   ```
+4. db 및 user생성, 권한부여
+   ```
+   CREATE DATABASE 'mydatabase' CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   CREATE USER 'mydatabaseuser'@'your_django_server_ip' IDENTIFIED BY 'your_db_password';
+   GRANT ALL PRIVILEGES ON mydatabase.* TO 'mydatabaseuser'@'your_django_server_ip';
+   FLUSH PRIVILEGES;
+   ```
+5. db 원격접속 설정
+   ```
+   sudo nano /etc/mysql/mariadb.conf.d/50-server.cnf
+   ```
+   설정파일을 연 다음
+   ```
+   bind-address= 127.0.0.1
+   ```
+   부분을 주석처리해줍니다.
 
-3. django setting.py 설정
+   
+   다음으로 django 서버에서 설정합니다. 
+3. django서버에서 setting.py 설정
    ```
    DATABASES = {
     'default': {
