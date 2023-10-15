@@ -21,7 +21,7 @@ instagram clone project
     ```
     
 3. my 폴더로 이동하면 insta.tar.gz 파일이 있습니다. 압축을 해제합시다.
-    -> 해당 프로세스는 불필요합니다. 3으로 바로 넘어가세요 
+    -> 해당 절차는 불필요합니다. 다음으로 바로 넘어가세요 
    ```
    cd my
    tar -xzvf insta.tar.gz
